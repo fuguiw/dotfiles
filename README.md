@@ -1,73 +1,84 @@
 # dotfiles
 
-for Mac.
+Personal reusable dotfiles for macOS, organized for one-command installation.
 
-## 注意事项
+## What is managed
 
-首先，更新所有submodule:
+- Home-directory dotfiles under `home/`
+- `~/.config` files under `config/`
+- A small set of sanitized tool preferences under `home/.claude/` and `home/.codex/`
 
-    $ git submodule update --init
+This repository intentionally excludes:
 
-如果需要强制建立软连接(以vim为例):
+- secrets and tokens
+- work-only aliases and internal hosts
+- runtime state, logs, caches, databases, and history files
+- authenticated host files such as `~/.config/gh/hosts.yml`
 
-    $ make vim force=1
+## Repository layout
 
-## vim
+```text
+home/    -> ~/
+config/  -> ~/.config/
+scripts/ -> installation helpers
+```
 
-1. 系统依赖: ctags, GNU GLOBAL
+## Install
 
-2. Mac安装ctags:
+Run:
 
-    * Download ctags from <http://ctags.sourceforge.net/>
-    * extract it, and
+```bash
+make install
+```
 
-    ```
-    $ ./configure
-    $ sudo make install
-    ```
+Or:
 
-    * or you can use brew
+```bash
+./scripts/install.sh
+```
 
-    ```
-    $ brew install ctags
-    ```
+The installer:
 
-3. Mac安装GNU GLOBAL
+- creates parent directories as needed
+- backs up conflicting files into `~/.dotfiles-backups/<timestamp>/`
+- creates symlinks for all tracked files under `home/` and `config/`
+- is safe to run repeatedly
 
-    * Getting GLOBAL from <http://www.gnu.org/software/global/download.html> and install it
-    * or you can use brew
+## Checks
 
-    ```
-    $ brew install global
-    ```
+Run:
 
-4. 由于要使用ycm，所以确保你的vim的版本在7.3.584及以上并且支持python2，如果不满足要求的话需要重新编译vim
+```bash
+make check
+```
 
-4. then:
+This validates installer syntax and basic config parsing.
 
-    ```
-    $ make vi
-    ```
+## Local-only overrides
 
-## iterm2
+Some settings should remain outside git.
 
-     $ make iterm2
+### Git identity
 
-然后安装iterm2/badwolf.itermcolors
+Copy `home/.gitconfig.local.example` to `~/.gitconfig.local` and fill in your identity:
 
-# git
+```ini
+[user]
+    name = Your Name
+    email = you@example.com
+```
 
-     $ make git
+### Zsh machine-local settings
 
-## tmux
+If you need private aliases, work settings, or machine-specific PATH entries, put them in:
 
-     $ make tmux
+- `~/.zshrc.local`
+- `~/.config/zsh/local.zsh`
 
-## zsh
+These files are loaded when present and are not managed by this repository.
 
-     $ make zsh
+## Notes
 
-## reference
-
-*最初阅读并参考了hit9的文章和dotfiles，特此表示感谢*
-
+- `gh` authentication is not managed here. Re-authenticate with `gh auth login` on a new machine.
+- `claude` and `codex` configs in this repository are sanitized preference files, not runtime state backups.
+- The repository no longer relies on git submodules for shell or vim frameworks.

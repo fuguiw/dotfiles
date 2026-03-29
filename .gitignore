@@ -1,6 +1,5 @@
 .*.swp
 .*.swo
-build
 .DS_Store
-
+build
 

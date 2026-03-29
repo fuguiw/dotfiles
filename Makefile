@@ -1,34 +1,15 @@
-.PHONY : vim tmux iterm2 zsh git
+SHELL := /bin/bash
 
-LNSOPT=-s
+.PHONY: install link check list
 
-ifdef force
-	ifeq ($(force),1)
-		LNSOPT=-fs
-	endif
-endif
+install link:
+	./scripts/install.sh
 
+check:
+	bash -n scripts/install.sh
+	zsh -n home/.zshrc home/.zprofile
+	git config --file home/.gitconfig --list >/dev/null
+	python3 -m json.tool home/.claude/settings.json >/dev/null
 
-vim:
-	cd vim/vundle ; git checkout master ; git pull;
-	mkdir -p ~/.vim/bundle/ 
-	ln $(LNSOPT) $(CURDIR)/vim/vimrc ~/.vimrc
-	ln $(LNSOPT) $(CURDIR)/vim/vundle ~/.vim/bundle/vundle
-	vim -c "BundleInstall"
-	#cd ~/.vim/bundle/YouCompleteMe ;  ./install.sh --clang-completer
-
-
-tmux:
-	ln $(LNSOPT) $(CURDIR)/tmux/tmux.conf ~/.tmux.conf
-
-iterm2:
-	ln $(LNSOPT) $(CURDIR)/iterm2/com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist
-
-zsh:
-	ln $(LNSOPT) $(CURDIR)/zsh/zshrc ~/.zshrc
-	ln $(LNSOPT) $(CURDIR)/zsh/oh-my-zsh ~/.oh-my-zsh
-
-
-git:
-	ln $(LNSOPT) $(CURDIR)/git/gitconfig ~/.gitconfig
-	ln $(LNSOPT) $(CURDIR)/git/gitignore_global ~/.gitignore_global
+list:
+	find home config -type f | sort
