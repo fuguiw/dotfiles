@@ -8,6 +8,7 @@ BACKUP_ROOT="${DOTFILES_BACKUP_ROOT:-$HOME/.dotfiles-backups}"
 TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
 BACKUP_DIR="$BACKUP_ROOT/$TIMESTAMP"
 BACKUP_CREATED=0
+OH_MY_ZSH_INSTALL_URL="https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
 
 # Print a log message to stderr.
 log() {
@@ -26,6 +27,16 @@ ensure_backup_dir() {
     mkdir -p "$BACKUP_DIR"
     BACKUP_CREATED=1
   fi
+}
+
+# Install Oh My Zsh when the standard installation directory is missing.
+ensure_oh_my_zsh() {
+  if [[ -d "$HOME/.oh-my-zsh" ]]; then
+    return
+  fi
+
+  log "Installing Oh My Zsh into $HOME/.oh-my-zsh"
+  sh -c "$(curl -fsSL "$OH_MY_ZSH_INSTALL_URL")"
 }
 
 # Move an existing target into the timestamped backup directory.
@@ -91,6 +102,7 @@ install_tree() {
 
 # Install all managed files from the repository into the current HOME.
 main() {
+  ensure_oh_my_zsh
   install_tree "$REPO_ROOT/home" "$HOME"
   install_tree "$REPO_ROOT/config" "$HOME/.config"
 

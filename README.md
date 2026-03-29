@@ -39,6 +39,7 @@ Or:
 
 The installer:
 
+- installs Oh My Zsh first when `~/.oh-my-zsh` is missing
 - creates parent directories as needed
 - backs up conflicting files into `~/.dotfiles-backups/<timestamp>/`
 - creates symlinks for all tracked files under `home/` and `config/`
@@ -79,6 +80,7 @@ These files are loaded when present and are not managed by this repository.
 
 ## Notes
 
+- Oh My Zsh is treated as an external dependency. The installer bootstraps it automatically when needed.
 - `gh` authentication is not managed here. Re-authenticate with `gh auth login` on a new machine.
 - `claude` and `codex` configs in this repository are sanitized preference files, not runtime state backups.
 - The repository no longer relies on git submodules for shell or vim frameworks.
